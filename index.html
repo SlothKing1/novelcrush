@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#0e0f14"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="NovelCrush"/>
+<meta name="description" content="Download light novels as EPUB — free and mobile friendly"/>
+<title>NovelCrush</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0e0f14;--bg2:#161820;--bg3:#1e2028;--border:#2a2d38;--accent:#e8c97e;--accent2:#c4a45a;--text:#f0ede6;--text2:#9a97a0;--text3:#6b6870;--error:#ff6b6b;--r:16px;--rs:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+#app{max-width:480px;margin:0 auto;padding:0 0 60px}
+.page{padding:20px 16px;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.hidden{display:none!important}
+
+/* BUTTONS */
+.btn{border:none;border-radius:var(--rs);padding:14px 18px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:var(--accent);color:#1a1500;width:100%}
+.btn-primary:hover:not(:disabled){background:var(--accent2);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-secondary{background:var(--bg3);color:var(--text2);border:1px solid var(--border);width:100%}
+.btn-secondary:hover{color:var(--text);border-color:var(--accent)}
+.btn-back{background:none;border:1px solid var(--border);color:var(--text2);padding:8px 14px;border-radius:8px;font-size:14px;cursor:pointer;margin-bottom:20px;font-family:'DM Sans',sans-serif;transition:all .2s}
+.btn-back:hover{color:var(--text);border-color:var(--accent)}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+
+/* SEARCH PAGE */
+.hero{text-align:center;padding:40px 0 28px}
+.hero-icon{font-size:52px;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(232,201,126,.4))}
+.hero-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--accent)}
+.hero-sub{color:var(--text2);font-size:14px;margin-top:8px;line-height:1.5}
+.input-label{display:block;font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500}
+.input-row{display:flex;gap:10px}
+.url-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px 14px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.url-input:focus{border-color:var(--accent)}
+.url-input::placeholder{color:var(--text3)}
+.go-btn{background:var(--accent);color:#1a1500;border:none;border-radius:var(--rs);padding:13px 18px;font-size:18px;font-weight:700;cursor:pointer;transition:all .2s;flex-shrink:0}
+.go-btn:disabled{opacity:.5;cursor:not-allowed}
+.error-msg{margin-top:12px;color:var(--error);font-size:13px;background:rgba(255,107,107,.08);padding:10px 12px;border-radius:8px;border:1px solid rgba(255,107,107,.2)}
+.sources-section{margin-top:24px}
+.sources-title{color:var(--text2);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.sources-grid{display:flex;flex-wrap:wrap;gap:8px}
+.source-chip{border:1px solid;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px}
+.source-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.auto-note{color:var(--text3);font-size:12px;margin-top:10px}
+
+/* SPINNER */
+.spinner{width:18px;height:18px;border:2px solid rgba(26,21,0,.3);border-top-color:#1a1500;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+.spinner-lg{width:36px;height:36px;border:3px solid rgba(232,201,126,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* NOVEL PAGE */
+.novel-header{display:flex;gap:16px;margin-bottom:24px;align-items:flex-start}
+.novel-cover{width:90px;height:130px;object-fit:cover;border-radius:10px;flex-shrink:0;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.novel-cover-placeholder{width:90px;height:130px;background:var(--bg3);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:32px}
+.novel-meta{flex:1;min-width:0}
+.novel-title-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;line-height:1.3;margin-bottom:6px}
+.novel-author{color:var(--text2);font-size:13px;margin-bottom:8px}
+.novel-badge{display:inline-block;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:3px 9px;border-radius:12px;margin-bottom:8px}
+.novel-ch-count{color:var(--accent);font-size:13px;font-weight:600}
+.range-title{font-size:16px;font-weight:600;margin-bottom:18px}
+.range-inputs{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.range-field{flex:1}
+.range-field label{display:block;font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.range-field input[type=number]{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:20px;font-weight:700;font-family:'DM Sans',sans-serif;text-align:center;outline:none;transition:border-color .2s}
+.range-field input[type=number]:focus{border-color:var(--accent)}
+.range-div{color:var(--text3);font-size:24px;margin-top:16px}
+.slider-row{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.slider{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bg3);outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg)}
+.presets{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.preset-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.preset-btn:hover{border-color:var(--accent);color:var(--accent)}
+.summary{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.pill{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:8px;font-size:12px}
+.pill-accent{color:var(--accent);border-color:rgba(232,201,126,.3);font-size:11px}
+.chapter-list{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:20px}
+.chapter-list-title{padding:16px 16px 12px;font-size:15px;font-weight:600;border-bottom:1px solid var(--border)}
+.chapter-scroll{max-height:280px;overflow-y:auto}
+.ch-item{display:flex;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;align-items:center}
+.ch-item.in-range{background:rgba(232,201,126,.05)}
+.ch-num{color:var(--text3);font-size:11px;min-width:28px;font-weight:600}
+.ch-name{color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ch-more{padding:12px 16px;color:var(--text3);font-size:13px;text-align:center}
+
+/* DOWNLOAD PAGE */
+.dl-hero{text-align:center;padding:40px 0 28px}
+.dl-icon{font-size:56px;margin-bottom:16px}
+.dl-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;margin-bottom:8px}
+.dl-novel{color:var(--accent);font-size:14px;font-weight:500}
+.prog-bar-bg{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px;transition:width .5s ease}
+.prog-stats{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-bottom:8px}
+.prog-pct{font-weight:600;color:var(--accent)}
+.prog-msg{color:var(--text3);font-size:13px;margin-bottom:16px}
+.dots{display:flex;gap:6px;justify-content:center}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
+.done-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text2)}
+.done-row:last-child{border-bottom:none}
+.done-row strong{color:var(--text)}
+.done-info{margin-bottom:20px}
+.btn-gap{margin-top:10px}
+.err-detail{color:var(--error);margin-bottom:16px;font-size:14px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SEARCH PAGE -->
+<div id="page-search" class="page">
+  <div class="hero">
+    <div class="hero-icon">📖</div>
+    <h1 class="hero-title">NovelCrush</h1>
+    <p class="hero-sub">Download any light novel as EPUB<br>Free · Fast · Mobile friendly</p>
+  </div>
+  <div class="card" style="margin-bottom:24px">
+    <label class="input-label">Paste a novel page URL to get started</label>
+    <div class="input-row">
+      <input id="url-input" class="url-input" type="url" placeholder="https://royalroad.com/fiction/..."/>
+      <button id="go-btn" class="go-btn" onclick="fetchNovel()">→</button>
+    </div>
+    <div id="search-error" class="error-msg hidden"></div>
+  </div>
+  <div class="sources-section">
+    <p class="sources-title">Supported sources</p>
+    <div class="sources-grid">
+      <div class="source-chip" style="border-color:#4a9eff44;color:#4a9eff"><span class="source-dot" style="background:#4a9eff"></span>Royal Road</div>
+      <div class="source-chip" style="border-color:#ff6b4a44;color:#ff6b4a"><span class="source-dot" style="background:#ff6b4a"></span>NovelFull</div>
+      <div class="source-chip" style="border-color:#a855f744;color:#a855f7"><span class="source-dot" style="background:#a855f7"></span>LightNovelPub</div>
+      <div class="source-chip" style="border-color:#22c55e44;color:#22c55e"><span class="source-dot" style="background:#22c55e"></span>FreeWebNovel</div>
+      <div class="source-chip" style="border-color:#f59e0b44;color:#f59e0b"><span class="source-dot" style="background:#f59e0b"></span>NovelBin</div>
+      <div class="source-chip" style="border-color:#ec489944;color:#ec4899"><span class="source-dot" style="background:#ec4899"></span>MTLNovel</div>
+    </div>
+    <p class="auto-note">+ Any other novel site (auto-detected)</p>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="page-loading" class="page hidden" style="text-align:center;padding-top:100px">
+  <div class="spinner-lg" style="margin-bottom:20px"></div>
+  <p style="color:var(--text2)">Fetching novel info...</p>
+</div>
+
+<!-- NOVEL PAGE -->
+<div id="page-novel" class="page hidden">
+  <button class="btn-back" onclick="showPage('search')">← Back</button>
+  <div class="novel-header">
+    <div id="novel-cover-wrap"></div>
+    <div class="novel-meta">
+      <h2 class="novel-title-text" id="novel-title"></h2>
+      <p class="novel-author" id="novel-author"></p>
+      <div class="novel-badge" id="novel-source"></div>
+      <p class="novel-ch-count" id="novel-ch-count"></p>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:0">
+    <h3 class="range-title">Select Chapter Range</h3>
+    <div class="range-inputs">
+      <div class="range-field">
+        <label>From chapter</label>
+        <input type="number" id="ch-start" min="1" value="1" oninput="onRangeChange()"/>
+      </div>
+      <div class="range-div">–</div>
+      <div class="range-field">
+        <label>To chapter</label>
+        <input type="number" id="ch-end" min="1" oninput="onRangeChange()"/>
+      </div>
+    </div>
+    <div class="slider-row">
+      <input type="range" class="slider" id="sl-start" min="1" value="1" oninput="onSliderStart(this.value)"/>
+      <input type="range" class="slider" id="sl-end" min="1" oninput="onSliderEnd(this.value)"/>
+    </div>
+    <div class="presets">
+      <button class="preset-btn" onclick="setPreset(1,50)">First 50</button>
+      <button class="preset-btn" onclick="setPreset(1,100)">First 100</button>
+      <button class="preset-btn" onclick="setPreset(1,500)">First 500</button>
+      <button class="preset-btn" id="preset-all" onclick="setPresetAll()">All chapters</button>
+    </div>
+    <div class="summary">
+      <span class="pill" id="sum-count"></span>
+      <span class="pill">📄 EPUB</span>
+      <span class="pill pill-accent" id="sum-filename"></span>
+    </div>
+    <div id="novel-error" class="error-msg hidden" style="margin-bottom:12px"></div>
+    <button class="btn btn-primary" id="dl-btn" onclick="startDownload()">⬇️ Download EPUB</button>
+  </div>
+  <div id="chapter-list-wrap"></div>
+</div>
+
+<!-- DOWNLOAD PAGE -->
+<div id="page-download" class="page hidden">
+  <button class="btn-back" onclick="showPage('novel')">← Back</button>
+  <div class="dl-hero">
+    <div class="dl-icon" id="dl-icon">⚙️</div>
+    <h2 class="dl-title" id="dl-title">Building your EPUB...</h2>
+    <p class="dl-novel" id="dl-novel-name"></p>
+  </div>
+  <div class="card" id="progress-card">
+    <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="prog-stats">
+      <span id="prog-count">Connecting...</span>
+      <span class="prog-pct" id="prog-pct">0%</span>
+    </div>
+    <p class="prog-msg" id="prog-msg">Please wait...</p>
+    <div class="dots"><span></span><span></span><span></span></div>
+  </div>
+  <div class="card hidden" id="done-card">
+    <div class="done-info">
+      <div class="done-row"><span>📚 Chapters</span><strong id="done-chapters"></strong></div>
+      <div class="done-row"><span>📄 Format</span><strong>EPUB</strong></div>
+      <div class="done-row"><span>📁 File</span><strong id="done-filename" style="font-size:12px;color:var(--accent)"></strong></div>
+    </div>
+    <button class="btn btn-primary" id="download-btn" onclick="doDownload()">⬇️ Download EPUB</button>
+    <button class="btn btn-secondary btn-gap" onclick="showPage('search')">Download another novel</button>
+  </div>
+  <div class="card hidden" id="error-card">
+    <p class="err-detail" id="err-detail"></p>
+    <button class="btn btn-secondary" onclick="showPage('novel')">Try again</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+let novelData = null;
+let currentJobId = null;
+let pollTimer = null;
+let totalChapters = 0;
+
+// ---- NAVIGATION ----
+function showPage(name) {
+  ['search','loading','novel','download'].forEach(p => {
+    document.getElementById('page-'+p).classList.toggle('hidden', p !== name);
+  });
+  window.scrollTo(0,0);
+}
+
+// ---- SEARCH ----
+document.getElementById('url-input').addEventListener('keydown', e => { if(e.key==='Enter') fetchNovel(); });
+
+async function fetchNovel() {
+  const url = document.getElementById('url-input').value.trim();
+  if (!url) return;
+  document.getElementById('search-error').classList.add('hidden');
+  document.getElementById('go-btn').disabled = true;
+  showPage('loading');
+  try {
+    const res = await fetch('/api/novel/info?url=' + encodeURIComponent(url));
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || 'Failed to fetch');
+    novelData = { ...data, url };
+    setupNovelPage();
+    showPage('novel');
+  } catch(e) {
+    showPage('search');
+    const el = document.getElementById('search-error');
+    el.textContent = '⚠️ ' + (e.message || 'Could not load novel. Try a different URL.');
+    el.classList.remove('hidden');
+  } finally {
+    document.getElementById('go-btn').disabled = false;
+  }
+}
+
+// ---- NOVEL PAGE ----
+function setupNovelPage() {
+  totalChapters = novelData.total_chapters || novelData.chapters?.length || 0;
+  document.getElementById('novel-title').textContent = novelData.title;
+  document.getElementById('novel-author').textContent = 'by ' + (novelData.author || 'Unknown');
+  document.getElementById('novel-source').textContent = novelData.source || '';
+  document.getElementById('novel-ch-count').textContent = totalChapters + ' chapters available';
+
+  // Cover
+  const wrap = document.getElementById('novel-cover-wrap');
+  if (novelData.cover_url) {
+    wrap.innerHTML = `<img class="novel-cover" src="${novelData.cover_url}" alt="cover" onerror="this.parentNode.innerHTML='<div class=novel-cover-placeholder>📚</div>'"/>`;
+  } else {
+    wrap.innerHTML = '<div class="novel-cover-placeholder">📚</div>';
+  }
+
+  // Range
+  ['ch-start','sl-start'].forEach(id => { document.getElementById(id).value = 1; document.getElementById(id).min = 1; document.getElementById(id).max = totalChapters; });
+  ['ch-end','sl-end'].forEach(id => { document.getElementById(id).value = totalChapters; document.getElementById(id).min = 1; document.getElementById(id).max = totalChapters; });
+  document.getElementById('preset-all').textContent = `All (${totalChapters})`;
+  updateSummary();
+
+  // Chapter list
+  const chapters = novelData.chapters || [];
+  if (chapters.length > 0) {
+    const shown = chapters.slice(0, 100);
+    const items = shown.map((ch,i) => `<div class="ch-item" id="chi-${i+1}"><span class="ch-num">${i+1}</span><span class="ch-name">${escHtml(ch.title)}</span></div>`).join('');
+    const more = chapters.length > 100 ? `<div class="ch-more">+ ${chapters.length-100} more chapters</div>` : '';
+    document.getElementById('chapter-list-wrap').innerHTML = `<div class="chapter-list"><div class="chapter-list-title">Chapter List</div><div class="chapter-scroll">${items}${more}</div></div>`;
+  }
+  updateInRange();
+}
+
+function getStart() { return parseInt(document.getElementById('ch-start').value)||1; }
+function getEnd() { return parseInt(document.getElementById('ch-end').value)||totalChapters; }
+
+function onRangeChange() {
+  let s = Math.max(1, Math.min(getStart(), totalChapters));
+  let e = Math.max(s, Math.min(getEnd(), totalChapters));
+  document.getElementById('sl-start').value = s;
+  document.getElementById('sl-end').value = e;
+  updateSummary();
+  updateInRange();
+}
+function onSliderStart(v) {
+  let s = parseInt(v), e = getEnd();
+  if(s > e) e = s;
+  document.getElementById('ch-start').value = s;
+  document.getElementById('ch-end').value = e;
+  document.getElementById('sl-end').value = e;
+  updateSummary(); updateInRange();
+}
+function onSliderEnd(v) {
+  let e = parseInt(v), s = getStart();
+  if(e < s) s = e;
+  document.getElementById('ch-end').value = e;
+  document.getElementById('ch-start').value = s;
+  document.getElementById('sl-start').value = s;
+  updateSummary(); updateInRange();
+}
+function setPreset(s,e) {
+  e = Math.min(e, totalChapters);
+  ['ch-start','sl-start'].forEach(id=>document.getElementById(id).value=s);
+  ['ch-end','sl-end'].forEach(id=>document.getElementById(id).value=e);
+  updateSummary(); updateInRange();
+}
+function setPresetAll() { setPreset(1, totalChapters); }
+
+function updateSummary() {
+  const s = getStart(), e = getEnd(), count = Math.max(0, e-s+1);
+  const title = (novelData?.title||'Novel').slice(0,22);
+  document.getElementById('sum-count').textContent = `📚 ${count} chapters`;
+  document.getElementById('sum-filename').textContent = `${title}… Ch.${s}-${e}.epub`;
+  document.getElementById('dl-btn').textContent = `⬇️ Download Ch.${s}–${e} as EPUB`;
+}
+
+function updateInRange() {
+  const s = getStart(), e = getEnd();
+  document.querySelectorAll('.ch-item').forEach(el => {
+    const n = parseInt(el.id.replace('chi-',''));
+    el.classList.toggle('in-range', n>=s && n<=e);
+  });
+}
+
+function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ---- DOWNLOAD ----
+async function startDownload() {
+  const s = getStart(), e = getEnd();
+  document.getElementById('novel-error').classList.add('hidden');
+  if (s < 1 || e < s) {
+    const el = document.getElementById('novel-error');
+    el.textContent = '⚠️ Invalid chapter range'; el.classList.remove('hidden'); return;
+  }
+  try {
+    const res = await fetch('/api/crawl', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({url: novelData.url, start_chapter: s, end_chapter: e, format:'epub'})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail||'Failed');
+    currentJobId = data.job_id;
+    setupDownloadPage();
+    showPage('download');
+    startPolling();
+  } catch(e) {
+    const el = document.getElementById('novel-error');
+    el.textContent = '⚠️ '+e.message; el.classList.remove('hidden');
+  }
+}
+
+function setupDownloadPage() {
+  document.getElementById('dl-icon').textContent = '⚙️';
+  document.getElementById('dl-title').textContent = 'Building your EPUB...';
+  document.getElementById('dl-novel-name').textContent = novelData?.title || '';
+  document.getElementById('progress-card').classList.remove('hidden');
+  document.getElementById('done-card').classList.add('hidden');
+  document.getElementById('error-card').classList.add('hidden');
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('prog-count').textContent = 'Connecting...';
+  document.getElementById('prog-pct').textContent = '0%';
+  document.getElementById('prog-msg').textContent = 'Please wait...';
+}
+
+function startPolling() {
+  clearInterval(pollTimer);
+  pollTimer = setInterval(pollJob, 1500);
+}
+
+async function pollJob() {
+  try {
+    const res = await fetch('/api/job/'+currentJobId);
+    const job = await res.json();
+    const pct = job.total > 0 ? Math.round(job.progress/job.total*100) : 0;
+    document.getElementById('prog-fill').style.width = pct+'%';
+    document.getElementById('prog-count').textContent = job.total > 0 ? `${job.progress} / ${job.total} chapters` : 'Working...';
+    document.getElementById('prog-pct').textContent = pct+'%';
+    document.getElementById('prog-msg').textContent = job.message || '...';
+
+    if (job.status === 'done') {
+      clearInterval(pollTimer);
+      showDone(job);
+    } else if (job.status === 'error') {
+      clearInterval(pollTimer);
+      showError(job.message);
+    }
+  } catch(e) {
+    clearInterval(pollTimer);
+    showError('Lost connection. Please try again.');
+  }
+}
+
+function showDone(job) {
+  document.getElementById('dl-icon').textContent = '✅';
+  document.getElementById('dl-title').textContent = 'Ready to Download!';
+  document.getElementById('progress-card').classList.add('hidden');
+  document.getElementById('done-card').classList.remove('hidden');
+  document.getElementById('done-chapters').textContent = job.total;
+  const title = (novelData?.title||'Novel').slice(0,25);
+  document.getElementById('done-filename').textContent = title+'... Ch.epub';
+}
+
+function showError(msg) {
+  document.getElementById('dl-icon').textContent = '❌';
+  document.getElementById('dl-title').textContent = 'Something went wrong';
+  document.getElementById('progress-card').classList.add('hidden');
+  document.getElementById('error-card').classList.remove('hidden');
+  document.getElementById('err-detail').textContent = msg;
+}
+
+function doDownload() {
+  window.location.href = '/api/download/'+currentJobId;
+}
+</script>
+</body>
+</html>
