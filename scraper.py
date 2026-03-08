@@ -93,13 +93,36 @@ class NovelScraper:
     async def _paginated_chapters(self, soup):
         chapters = self._chapter_links(soup)
 
-        # Find last page number
+        # Find last page from pagination
         last_page = 1
+
+        # Try data-page attributes
         pagination = soup.select("ul.pagination li a[data-page]")
         if pagination:
             pages = [int(a["data-page"]) for a in pagination if a.get("data-page", "").isdigit()]
             if pages:
                 last_page = max(pages)
+
+        # Try finding Last button href e.g. ?page=32
+        if last_page == 1:
+            for a in soup.select("ul.pagination li a"):
+                href = a.get("href", "")
+                text = a.get_text(strip=True).lower()
+                if "last" in text or ">>" in text:
+                    m = re.search(r'page=(\d+)', href)
+                    if m:
+                        last_page = int(m.group(1))
+                        break
+
+        # Scan all pagination links for highest page number
+        if last_page == 1:
+            for a in soup.select("ul.pagination li a"):
+                href = a.get("href", "")
+                m = re.search(r'page=(\d+)', href)
+                if m:
+                    last_page = max(last_page, int(m.group(1)))
+
+        print(f"[scraper] Total pages: {last_page}")
 
         base = self.url.rstrip("/")
         for page in range(2, last_page + 1):
@@ -109,20 +132,19 @@ class NovelScraper:
             except:
                 pass
 
-        # Remove duplicates preserving order
+        # Remove duplicates
         seen, out = set(), []
         for ch in chapters:
             if ch["url"] not in seen:
                 seen.add(ch["url"])
                 out.append(ch)
 
-        # Sort by chapter number found in title - works for all sites
+        # Sort by first number in title
         def get_chapter_num(ch):
             nums = re.findall(r'\d+', ch["title"])
             return int(nums[0]) if nums else 0
 
         out.sort(key=get_chapter_num)
-
         return out
 
     async def _smart_chapters(self, soup):
@@ -140,7 +162,6 @@ class NovelScraper:
                 seen.add(ch["url"])
                 out.append(ch)
 
-        # Sort by chapter number
         def get_chapter_num(ch):
             nums = re.findall(r'\d+', ch["title"])
             return int(nums[0]) if nums else 0
