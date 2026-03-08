@@ -30,9 +30,36 @@ def get_domain(url):
     d = urlparse(url).netloc.lower()
     return d[4:] if d.startswith("www.") else d
 
+def _find_last_page(soup):
+    """
+    Reliably find the last page number from any pagination structure.
+    Strategy 1: Look for 'Last' or '>>' link and read page number from its href.
+    Strategy 2: Scan ALL pagination hrefs and take the highest page number found.
+    Works for any site regardless of how many pages there are.
+    """
+    last_page = 1
+
+    # Strategy 1: Find explicit "Last" or ">>" button and read from href
+    for a in soup.select("ul.pagination li a, .pagination a, nav a"):
+        text = a.get_text(strip=True).lower()
+        href = a.get("href", "")
+        if any(kw in text for kw in ["last", "»", ">>"]):
+            m = re.search(r'[?&]page=(\d+)', href)
+            if m:
+                last_page = max(last_page, int(m.group(1)))
+
+    # Strategy 2: Scan all pagination links for highest page number in href
+    for a in soup.select("ul.pagination li a, .pagination a, nav a"):
+        href = a.get("href", "")
+        m = re.search(r'[?&]page=(\d+)', href)
+        if m:
+            last_page = max(last_page, int(m.group(1)))
+
+    return last_page
+
 class NovelScraper:
     def __init__(self, url):
-        self.url = re.sub(r'\?page=\d+', '', url).rstrip("/")
+        self.url = re.sub(r'[?&]page=\d+', '', url).rstrip("/")
         self.domain = get_domain(url)
         self.cfg = next((v for k, v in SOURCES.items() if k in self.domain), None)
         self._session = None
@@ -93,38 +120,10 @@ class NovelScraper:
     async def _paginated_chapters(self, soup):
         chapters = self._chapter_links(soup)
 
-        # Find last page from pagination
-        last_page = 1
-
-        # Try data-page attributes
-        pagination = soup.select("ul.pagination li a[data-page]")
-        if pagination:
-            pages = [int(a["data-page"]) for a in pagination if a.get("data-page", "").isdigit()]
-            if pages:
-                last_page = max(pages)
-
-        # Try finding Last button href e.g. ?page=32
-        if last_page == 1:
-            for a in soup.select("ul.pagination li a"):
-                href = a.get("href", "")
-                text = a.get_text(strip=True).lower()
-                if "last" in text or ">>" in text:
-                    m = re.search(r'page=(\d+)', href)
-                    if m:
-                        last_page = int(m.group(1))
-                        break
-
-        # Scan all pagination links for highest page number
-        if last_page == 1:
-            for a in soup.select("ul.pagination li a"):
-                href = a.get("href", "")
-                m = re.search(r'page=(\d+)', href)
-                if m:
-                    last_page = max(last_page, int(m.group(1)))
-
+        last_page = _find_last_page(soup)
         print(f"[scraper] Total pages: {last_page}")
 
-        base = re.sub(r'\?page=\d+', '', self.url).rstrip("/")
+        base = re.sub(r'[?&]page=\d+', '', self.url).rstrip("/")
         for page in range(2, last_page + 1):
             try:
                 s2 = await self.fetch(f"{base}?page={page}")
@@ -132,14 +131,14 @@ class NovelScraper:
             except:
                 pass
 
-        # Remove duplicates
+        # Remove duplicates preserving order
         seen, out = set(), []
         for ch in chapters:
             if ch["url"] not in seen:
                 seen.add(ch["url"])
                 out.append(ch)
 
-        # Sort by first number in title
+        # Sort by first number found in title
         def get_chapter_num(ch):
             nums = re.findall(r'\d+', ch["title"])
             return int(nums[0]) if nums else 0
