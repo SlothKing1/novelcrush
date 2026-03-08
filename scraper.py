@@ -101,11 +101,6 @@ class NovelScraper:
             if pages:
                 last_page = max(pages)
 
-        # Also check for "Last" link
-        last_link = soup.select_one("ul.pagination li a[data-page='last'], ul.pagination li:last-child a")
-        if last_link and last_link.get("data-page", "").isdigit():
-            last_page = max(last_page, int(last_link["data-page"]))
-
         base = self.url.rstrip("/")
         for page in range(2, last_page + 1):
             try:
@@ -121,13 +116,12 @@ class NovelScraper:
                 seen.add(ch["url"])
                 out.append(ch)
 
-        # Make sure chapter 1 is first - reverse if needed
-        if len(out) > 1:
-            first_num = re.search(r'\d+', out[0]["title"])
-            last_num = re.search(r'\d+', out[-1]["title"])
-            if first_num and last_num:
-                if int(first_num.group()) > int(last_num.group()):
-                    out.reverse()
+        # Sort by chapter number found in title - works for all sites
+        def get_chapter_num(ch):
+            nums = re.findall(r'\d+', ch["title"])
+            return int(nums[0]) if nums else 0
+
+        out.sort(key=get_chapter_num)
 
         return out
 
@@ -145,6 +139,13 @@ class NovelScraper:
             if ch["url"] not in seen:
                 seen.add(ch["url"])
                 out.append(ch)
+
+        # Sort by chapter number
+        def get_chapter_num(ch):
+            nums = re.findall(r'\d+', ch["title"])
+            return int(nums[0]) if nums else 0
+
+        out.sort(key=get_chapter_num)
         return out
 
     def _chapter_links(self, soup):
