@@ -82,24 +82,54 @@ class NovelScraper:
 
     async def _get_chapters(self, soup):
         if "royalroad.com" in self.domain:
-            return [{"title": a.get_text(strip=True), "url": urljoin(self.url, a["href"])}
+            chapters = [{"title": a.get_text(strip=True), "url": urljoin(self.url, a["href"])}
                     for row in soup.select("table#chapters tbody tr")
                     for a in [row.select_one("td a")] if a]
+            return chapters
         if "novelfull.com" in self.domain or "novelbin" in self.domain:
             return await self._paginated_chapters(soup)
         return await self._smart_chapters(soup)
 
     async def _paginated_chapters(self, soup):
         chapters = self._chapter_links(soup)
-        for suffix in ["/chapters?page=1&limit=50000", "?page=1"]:
+
+        # Find last page number
+        last_page = 1
+        pagination = soup.select("ul.pagination li a[data-page]")
+        if pagination:
+            pages = [int(a["data-page"]) for a in pagination if a.get("data-page", "").isdigit()]
+            if pages:
+                last_page = max(pages)
+
+        # Also check for "Last" link
+        last_link = soup.select_one("ul.pagination li a[data-page='last'], ul.pagination li:last-child a")
+        if last_link and last_link.get("data-page", "").isdigit():
+            last_page = max(last_page, int(last_link["data-page"]))
+
+        base = self.url.rstrip("/")
+        for page in range(2, last_page + 1):
             try:
-                s2 = await self.fetch(self.url.rstrip("/") + suffix)
-                extra = self._chapter_links(s2)
-                if len(extra) > len(chapters):
-                    chapters = extra
-                    break
-            except: pass
-        return chapters
+                s2 = await self.fetch(f"{base}?page={page}")
+                chapters += self._chapter_links(s2)
+            except:
+                pass
+
+        # Remove duplicates preserving order
+        seen, out = set(), []
+        for ch in chapters:
+            if ch["url"] not in seen:
+                seen.add(ch["url"])
+                out.append(ch)
+
+        # Make sure chapter 1 is first - reverse if needed
+        if len(out) > 1:
+            first_num = re.search(r'\d+', out[0]["title"])
+            last_num = re.search(r'\d+', out[-1]["title"])
+            if first_num and last_num:
+                if int(first_num.group()) > int(last_num.group()):
+                    out.reverse()
+
+        return out
 
     async def _smart_chapters(self, soup):
         links = self._chapter_links(soup)
