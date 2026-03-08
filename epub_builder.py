@@ -1,6 +1,5 @@
 from ebooklib import epub
-import aiohttp
-import asyncio
+import urllib.request
 
 def build_epub(title, chapters, output_path, cover_url=None, author="Unknown"):
     book = epub.EpubBook()
@@ -11,7 +10,6 @@ def build_epub(title, chapters, output_path, cover_url=None, author="Unknown"):
     # Add cover image
     if cover_url:
         try:
-            import urllib.request
             cover_data = urllib.request.urlopen(cover_url, timeout=10).read()
             ext = cover_url.split(".")[-1].split("?")[0].lower()
             if ext not in ["jpg", "jpeg", "png", "gif", "webp"]:
@@ -41,7 +39,7 @@ p {
     text-align: justify;
 }
 """
-    css = epub.EpubItem(uid="style", file_name="style/style.css", media_type="text/css", content=style)
+    css = epub.EpubItem(uid="style", file_name="style/style.css", media_type="text/css", content=style.encode("utf-8"))
     book.add_item(css)
 
     epub_chapters = []
@@ -66,7 +64,8 @@ p {
     <h1>{ch['title']}</h1>
     {paragraphs}
 </body>
-</html>"""
+</html>""".encode("utf-8")
+
         c.add_item(css)
         book.add_item(c)
         epub_chapters.append(c)
