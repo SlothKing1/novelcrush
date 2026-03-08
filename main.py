@@ -83,3 +83,6 @@ async def run_crawl(job_id, req):
     except Exception as e:
         jobs[job_id]["status"] = "error"
         jobs[job_id]["message"] = str(e)
+        if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
