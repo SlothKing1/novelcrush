@@ -1,7 +1,17 @@
 from ebooklib import epub
 import urllib.request
+import re
 
-def build_epub(title, chapters, output_path, cover_url=None, author="Unknown"):
+def clean_chapter_title(title):
+    # "Chapter 41 - Chapter 41: Chen Yuan" -> "Chapter 41: Chen Yuan"
+    cleaned = re.sub(r'^(Chapter\s+\d+)\s*[-–]\s*\1[:\s]*', r'\1: ', title, flags=re.IGNORECASE)
+    # "C641 - Chapter 641: Title" -> "Chapter 641: Title"
+    cleaned = re.sub(r'^C(\d+)\s*[-–]\s*Chapter\s+\1[:\s]*', r'Chapter \1: ', cleaned, flags=re.IGNORECASE)
+    # "641 - Chapter 641: Title" -> "Chapter 641: Title"
+    cleaned = re.sub(r'^\d+\s*[-–]\s*(Chapter\s+\d+)', r'\1', cleaned, flags=re.IGNORECASE)
+    return cleaned.strip()
+
+def build_epub(title, chapters, output_path, cover_url=None, author="Unknown", clean_titles=False):
     book = epub.EpubBook()
     book.set_title(title)
     book.set_language("en")
@@ -44,7 +54,8 @@ p {
 
     epub_chapters = []
     for i, ch in enumerate(chapters):
-        c = epub.EpubHtml(title=ch["title"], file_name=f"chapter_{i+1}.xhtml", lang="en")
+        ch_title = clean_chapter_title(ch["title"]) if clean_titles else ch["title"]
+        c = epub.EpubHtml(title=ch_title, file_name=f"chapter_{i+1}.xhtml", lang="en")
 
         # Build paragraphs
         paragraphs = ""
@@ -57,11 +68,11 @@ p {
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>{ch['title']}</title>
+    <title>{ch_title}</title>
     <link rel="stylesheet" type="text/css" href="../style/style.css"/>
 </head>
 <body>
-    <h1>{ch['title']}</h1>
+    <h1>{ch_title}</h1>
     {paragraphs}
 </body>
 </html>""".encode("utf-8")
