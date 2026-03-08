@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -6,7 +7,6 @@
 <meta name="theme-color" content="#0e0f14"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="NovelCrush"/>
-<meta name="description" content="Download light novels as EPUB — free and mobile friendly"/>
 <title>NovelCrush</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -14,137 +14,201 @@
 :root{--bg:#0e0f14;--bg2:#161820;--bg3:#1e2028;--border:#2a2d38;--accent:#e8c97e;--accent2:#c4a45a;--text:#f0ede6;--text2:#9a97a0;--text3:#6b6870;--error:#ff6b6b;--r:16px;--rs:10px}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
-#app{max-width:480px;margin:0 auto;padding:0 0 60px}
+#app{max-width:480px;margin:0 auto;padding:0 0 80px}
 .page{padding:20px 16px;animation:fadeUp .3s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .hidden{display:none!important}
 
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(–bg2);border-top:1px solid var(–border);display:flex;z-index:100;max-width:480px;margin:0 auto}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 14px;font-size:10px;color:var(–text3);cursor:pointer;gap:4px;transition:color .2s;border:none;background:none;font-family:‘DM Sans’,sans-serif}
+.nav-btn.active{color:var(–accent)}
+.nav-icon{font-size:22px;line-height:1}
+@media(max-width:480px){.bottom-nav{left:0;right:0}}
+
 /* BUTTONS */
-.btn{border:none;border-radius:var(--rs);padding:14px 18px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-primary{background:var(--accent);color:#1a1500;width:100%}
-.btn-primary:hover:not(:disabled){background:var(--accent2);transform:translateY(-1px)}
+.btn{border:none;border-radius:var(–rs);padding:14px 18px;font-size:15px;font-weight:600;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:var(–accent);color:#1a1500;width:100%}
+.btn-primary:hover:not(:disabled){background:var(–accent2);transform:translateY(-1px)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed}
-.btn-secondary{background:var(--bg3);color:var(--text2);border:1px solid var(--border);width:100%}
-.btn-secondary:hover{color:var(--text);border-color:var(--accent)}
-.btn-back{background:none;border:1px solid var(--border);color:var(--text2);padding:8px 14px;border-radius:8px;font-size:14px;cursor:pointer;margin-bottom:20px;font-family:'DM Sans',sans-serif;transition:all .2s}
-.btn-back:hover{color:var(--text);border-color:var(--accent)}
+.btn-secondary{background:var(–bg3);color:var(–text2);border:1px solid var(–border);width:100%}
+.btn-secondary:hover{color:var(–text);border-color:var(–accent)}
+.btn-back{background:none;border:1px solid var(–border);color:var(–text2);padding:8px 14px;border-radius:8px;font-size:14px;cursor:pointer;margin-bottom:20px;font-family:‘DM Sans’,sans-serif;transition:all .2s}
+.btn-back:hover{color:var(–text);border-color:var(–accent)}
+.btn-sm{padding:7px 14px;font-size:13px;border-radius:8px;border:none;cursor:pointer;font-family:‘DM Sans’,sans-serif;font-weight:600}
+.btn-accent-sm{background:var(–accent);color:#1a1500}
+.btn-ghost-sm{background:var(–bg3);color:var(–text2);border:1px solid var(–border)}
+.btn-danger-sm{background:rgba(255,107,107,.1);color:var(–error);border:1px solid rgba(255,107,107,.2)}
 
 /* CARDS */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.card{background:var(–bg2);border:1px solid var(–border);border-radius:var(–r);padding:20px}
 
 /* SEARCH PAGE */
-.hero{text-align:center;padding:40px 0 28px}
-.hero-icon{font-size:52px;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(232,201,126,.4))}
-.hero-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:var(--accent)}
-.hero-sub{color:var(--text2);font-size:14px;margin-top:8px;line-height:1.5}
-.input-label{display:block;font-size:13px;color:var(--text2);margin-bottom:10px;font-weight:500}
+.hero{text-align:center;padding:32px 0 20px}
+.hero-icon{font-size:48px;margin-bottom:10px;filter:drop-shadow(0 0 20px rgba(232,201,126,.4))}
+.hero-title{font-family:‘Playfair Display’,serif;font-size:36px;font-weight:700;color:var(–accent)}
+.hero-sub{color:var(–text2);font-size:13px;margin-top:6px}
+.input-label{display:block;font-size:13px;color:var(–text2);margin-bottom:10px;font-weight:500}
 .input-row{display:flex;gap:10px}
-.url-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:13px 14px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
-.url-input:focus{border-color:var(--accent)}
-.url-input::placeholder{color:var(--text3)}
-.go-btn{background:var(--accent);color:#1a1500;border:none;border-radius:var(--rs);padding:13px 18px;font-size:18px;font-weight:700;cursor:pointer;transition:all .2s;flex-shrink:0}
+.url-input{flex:1;background:var(–bg3);border:1px solid var(–border);border-radius:var(–rs);padding:13px 14px;color:var(–text);font-size:14px;font-family:‘DM Sans’,sans-serif;outline:none;transition:border-color .2s}
+.url-input:focus{border-color:var(–accent)}
+.url-input::placeholder{color:var(–text3)}
+.go-btn{background:var(–accent);color:#1a1500;border:none;border-radius:var(–rs);padding:13px 18px;font-size:18px;font-weight:700;cursor:pointer;transition:all .2s;flex-shrink:0}
 .go-btn:disabled{opacity:.5;cursor:not-allowed}
-.error-msg{margin-top:12px;color:var(--error);font-size:13px;background:rgba(255,107,107,.08);padding:10px 12px;border-radius:8px;border:1px solid rgba(255,107,107,.2)}
-.sources-section{margin-top:24px}
-.sources-title{color:var(--text2);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.error-msg{margin-top:12px;color:var(–error);font-size:13px;background:rgba(255,107,107,.08);padding:10px 12px;border-radius:8px;border:1px solid rgba(255,107,107,.2)}
+.sources-section{margin-top:20px}
+.sources-title{color:var(–text2);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
 .sources-grid{display:flex;flex-wrap:wrap;gap:8px}
 .source-chip{border:1px solid;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:500;display:flex;align-items:center;gap:6px}
 .source-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.auto-note{color:var(--text3);font-size:12px;margin-top:10px}
+.auto-note{color:var(–text3);font-size:12px;margin-top:8px}
+
+/* SEARCH RESULTS */
+.search-section{margin-top:20px}
+.search-result-item{display:flex;gap:12px;padding:12px;background:var(–bg2);border:1px solid var(–border);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:border-color .2s}
+.search-result-item:hover{border-color:var(–accent)}
+.search-result-cover{width:50px;height:70px;object-fit:cover;border-radius:6px;flex-shrink:0;background:var(–bg3)}
+.search-result-cover-placeholder{width:50px;height:70px;border-radius:6px;flex-shrink:0;background:var(–bg3);display:flex;align-items:center;justify-content:center;font-size:20px}
+.search-result-info{flex:1;min-width:0}
+.search-result-title{font-size:14px;font-weight:600;color:var(–text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.search-result-meta{font-size:12px;color:var(–text2)}
+.search-result-source{display:inline-block;font-size:11px;color:var(–text3);border:1px solid var(–border);border-radius:8px;padding:2px 7px;margin-top:4px}
 
 /* SPINNER */
 .spinner{width:18px;height:18px;border:2px solid rgba(26,21,0,.3);border-top-color:#1a1500;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
-.spinner-lg{width:36px;height:36px;border:3px solid rgba(232,201,126,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+.spinner-lg{width:36px;height:36px;border:3px solid rgba(232,201,126,.2);border-top-color:var(–accent);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+.spinner-sm{width:14px;height:14px;border:2px solid rgba(232,201,126,.2);border-top-color:var(–accent);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* NOVEL PAGE */
 .novel-header{display:flex;gap:16px;margin-bottom:24px;align-items:flex-start}
 .novel-cover{width:90px;height:130px;object-fit:cover;border-radius:10px;flex-shrink:0;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-.novel-cover-placeholder{width:90px;height:130px;background:var(--bg3);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:32px}
+.novel-cover-placeholder{width:90px;height:130px;background:var(–bg3);border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:32px}
 .novel-meta{flex:1;min-width:0}
-.novel-title-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;line-height:1.3;margin-bottom:6px}
-.novel-author{color:var(--text2);font-size:13px;margin-bottom:8px}
-.novel-badge{display:inline-block;background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:3px 9px;border-radius:12px;margin-bottom:8px}
-.novel-ch-count{color:var(--accent);font-size:13px;font-weight:600}
+.novel-title-text{font-family:‘Playfair Display’,serif;font-size:20px;font-weight:600;line-height:1.3;margin-bottom:6px}
+.novel-author{color:var(–text2);font-size:13px;margin-bottom:8px}
+.novel-badge{display:inline-block;background:var(–bg3);border:1px solid var(–border);color:var(–text2);font-size:11px;padding:3px 9px;border-radius:12px;margin-bottom:8px}
+.novel-ch-count{color:var(–accent);font-size:13px;font-weight:600}
 .range-title{font-size:16px;font-weight:600;margin-bottom:18px}
 .range-inputs{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .range-field{flex:1}
-.range-field label{display:block;font-size:11px;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
-.range-field input[type=number]{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:20px;font-weight:700;font-family:'DM Sans',sans-serif;text-align:center;outline:none;transition:border-color .2s}
-.range-field input[type=number]:focus{border-color:var(--accent)}
-.range-div{color:var(--text3);font-size:24px;margin-top:16px}
+.range-field label{display:block;font-size:11px;color:var(–text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.range-field input[type=number]{width:100%;background:var(–bg3);border:1px solid var(–border);border-radius:8px;padding:12px;color:var(–text);font-size:20px;font-weight:700;font-family:‘DM Sans’,sans-serif;text-align:center;outline:none;transition:border-color .2s}
+.range-field input[type=number]:focus{border-color:var(–accent)}
+.range-div{color:var(–text3);font-size:24px;margin-top:16px}
 .slider-row{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
-.slider{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bg3);outline:none}
-.slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg)}
+.slider{width:100%;-webkit-appearance:none;height:4px;border-radius:2px;background:var(–bg3);outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(–accent);cursor:pointer;border:2px solid var(–bg)}
 .presets{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.preset-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
-.preset-btn:hover{border-color:var(--accent);color:var(--accent)}
+.preset-btn{background:var(–bg3);border:1px solid var(–border);color:var(–text2);padding:7px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:‘DM Sans’,sans-serif;transition:all .2s}
+.preset-btn:hover{border-color:var(–accent);color:var(–accent)}
 .summary{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
-.pill{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:8px;font-size:12px}
-.pill-accent{color:var(--accent);border-color:rgba(232,201,126,.3);font-size:11px}
-.chapter-list{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:20px}
-.chapter-list-title{padding:16px 16px 12px;font-size:15px;font-weight:600;border-bottom:1px solid var(--border)}
+.pill{background:var(–bg3);border:1px solid var(–border);color:var(–text2);padding:5px 10px;border-radius:8px;font-size:12px}
+.pill-accent{color:var(–accent);border-color:rgba(232,201,126,.3);font-size:11px}
+.chapter-list{background:var(–bg2);border:1px solid var(–border);border-radius:var(–r);overflow:hidden;margin-top:20px}
+.chapter-list-title{padding:16px 16px 12px;font-size:15px;font-weight:600;border-bottom:1px solid var(–border)}
 .chapter-scroll{max-height:280px;overflow-y:auto}
-.ch-item{display:flex;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;align-items:center}
+.ch-item{display:flex;gap:12px;padding:10px 16px;border-bottom:1px solid var(–border);font-size:13px;align-items:center}
 .ch-item.in-range{background:rgba(232,201,126,.05)}
-.ch-num{color:var(--text3);font-size:11px;min-width:28px;font-weight:600}
-.ch-name{color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ch-more{padding:12px 16px;color:var(--text3);font-size:13px;text-align:center}
+.ch-num{color:var(–text3);font-size:11px;min-width:28px;font-weight:600}
+.ch-name{color:var(–text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 /* TOGGLE */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--border);margin-bottom:14px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(–border);margin-bottom:14px}
 .toggle-label{flex:1;margin-right:12px}
-.toggle-label-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
-.toggle-label-sub{font-size:12px;color:var(--text2)}
+.toggle-label-title{font-size:14px;font-weight:600;color:var(–text);margin-bottom:2px}
+.toggle-label-sub{font-size:12px;color:var(–text2)}
 .toggle-wrap{position:relative;width:44px;height:26px;flex-shrink:0}
 .toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
-.toggle-track{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg3);border:1px solid var(--border);border-radius:26px;cursor:pointer;transition:.2s}
-.toggle-knob{position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:var(--text3);border-radius:50%;transition:.2s;pointer-events:none}
-.toggle-wrap input:checked + .toggle-track{background:var(--accent);border-color:var(--accent)}
+.toggle-track{position:absolute;top:0;left:0;right:0;bottom:0;background:var(–bg3);border:1px solid var(–border);border-radius:26px;cursor:pointer;transition:.2s}
+.toggle-knob{position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:var(–text3);border-radius:50%;transition:.2s;pointer-events:none}
+.toggle-wrap input:checked + .toggle-track{background:var(–accent);border-color:var(–accent)}
 .toggle-wrap input:checked ~ .toggle-knob{left:21px;background:#1a1500}
 
 /* DOWNLOAD PAGE */
 .dl-hero{text-align:center;padding:40px 0 28px}
 .dl-icon{font-size:56px;margin-bottom:16px}
-.dl-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;margin-bottom:8px}
-.dl-novel{color:var(--accent);font-size:14px;font-weight:500}
-.prog-bar-bg{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:10px}
-.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:4px;transition:width .5s ease}
-.prog-stats{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-bottom:8px}
-.prog-pct{font-weight:600;color:var(--accent)}
-.prog-msg{color:var(--text3);font-size:13px;margin-bottom:16px}
+.dl-title{font-family:‘Playfair Display’,serif;font-size:26px;font-weight:600;margin-bottom:8px}
+.dl-novel{color:var(–accent);font-size:14px;font-weight:500}
+.prog-bar-bg{height:8px;background:var(–bg3);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(–accent2),var(–accent));border-radius:4px;transition:width .5s ease}
+.prog-stats{display:flex;justify-content:space-between;font-size:13px;color:var(–text2);margin-bottom:8px}
+.prog-pct{font-weight:600;color:var(–accent)}
+.prog-msg{color:var(–text3);font-size:13px;margin-bottom:16px}
 .dots{display:flex;gap:6px;justify-content:center}
-.dots span{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.2s infinite}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(–accent);animation:pulse 1.2s infinite}
 .dots span:nth-child(2){animation-delay:.2s}
 .dots span:nth-child(3){animation-delay:.4s}
 @keyframes pulse{0%,80%,100%{opacity:.2;transform:scale(.8)}40%{opacity:1;transform:scale(1)}}
-.done-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text2)}
+.done-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(–border);font-size:14px;color:var(–text2)}
 .done-row:last-child{border-bottom:none}
-.done-row strong{color:var(--text)}
+.done-row strong{color:var(–text)}
 .done-info{margin-bottom:20px}
 .btn-gap{margin-top:10px}
-.err-detail{color:var(--error);margin-bottom:16px;font-size:14px}
+.err-detail{color:var(–error);margin-bottom:16px;font-size:14px}
+
+/* LIBRARY PAGE */
+.page-title{font-family:‘Playfair Display’,serif;font-size:28px;font-weight:700;color:var(–accent);margin-bottom:6px}
+.page-sub{color:var(–text2);font-size:13px;margin-bottom:20px}
+.update-banner{background:rgba(232,201,126,.08);border:1px solid rgba(232,201,126,.2);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.update-banner-text{flex:1;font-size:13px;color:var(–text)}
+.lib-item{display:flex;gap:14px;padding:16px;background:var(–bg2);border:1px solid var(–border);border-radius:14px;margin-bottom:12px}
+.lib-cover{width:70px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;background:var(–bg3)}
+.lib-cover-placeholder{width:70px;height:100px;border-radius:8px;flex-shrink:0;background:var(–bg3);display:flex;align-items:center;justify-content:center;font-size:28px}
+.lib-info{flex:1;min-width:0}
+.lib-title{font-size:15px;font-weight:600;color:var(–text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lib-author{font-size:12px;color:var(–text2);margin-bottom:6px}
+.lib-progress{font-size:12px;color:var(–accent);font-weight:600;margin-bottom:4px}
+.lib-new{font-size:11px;color:#22c55e;font-weight:600;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:6px;padding:2px 8px;display:inline-block;margin-bottom:6px}
+.lib-date{font-size:11px;color:var(–text3)}
+.lib-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.lib-empty{text-align:center;padding:60px 20px;color:var(–text2)}
+.lib-empty-icon{font-size:48px;margin-bottom:12px}
+
+/* QUEUE PAGE */
+.queue-item{display:flex;gap:14px;padding:16px;background:var(–bg2);border:1px solid var(–border);border-radius:14px;margin-bottom:12px}
+.queue-cover{width:56px;height:80px;object-fit:cover;border-radius:8px;flex-shrink:0;background:var(–bg3)}
+.queue-cover-placeholder{width:56px;height:80px;border-radius:8px;flex-shrink:0;background:var(–bg3);display:flex;align-items:center;justify-content:center;font-size:22px}
+.queue-info{flex:1;min-width:0}
+.queue-title{font-size:14px;font-weight:600;color:var(–text);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.queue-chapters{font-size:12px;color:var(–text2);margin-bottom:8px}
+.queue-status{font-size:12px;font-weight:600}
+.queue-status.queued{color:var(–text3)}
+.queue-status.downloading{color:var(–accent)}
+.queue-status.done{color:#22c55e}
+.queue-status.error{color:var(–error)}
+.queue-prog-bg{height:4px;background:var(–bg3);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.queue-prog-fill{height:100%;background:var(–accent);border-radius:2px;transition:width .5s}
+.queue-empty{text-align:center;padding:60px 20px;color:var(–text2)}
+.queue-empty-icon{font-size:48px;margin-bottom:12px}
+.add-queue-row{display:flex;gap:10px;margin-bottom:20px}
 </style>
+
 </head>
 <body>
 <div id="app">
 
 <!-- SEARCH PAGE -->
+
 <div id="page-search" class="page">
   <div class="hero">
     <div class="hero-icon">📖</div>
     <h1 class="hero-title">NovelCrush</h1>
-    <p class="hero-sub">Download any light novel as EPUB<br>Free · Fast · Mobile friendly</p>
+    <p class="hero-sub">Download any light novel as EPUB</p>
   </div>
-  <div class="card" style="margin-bottom:24px">
-    <label class="input-label">Paste a novel page URL to get started</label>
+  <div class="card" style="margin-bottom:16px">
+    <label class="input-label">Paste a URL or search by name</label>
     <div class="input-row">
-      <input id="url-input" class="url-input" type="url" placeholder="https://royalroad.com/fiction/..."/>
-      <button id="go-btn" class="go-btn" onclick="fetchNovel()">→</button>
+      <input id="url-input" class="url-input" type="text" placeholder="URL or novel name..."/>
+      <button id="go-btn" class="go-btn" onclick="handleSearch()">→</button>
     </div>
     <div id="search-error" class="error-msg hidden"></div>
   </div>
-  <div class="sources-section">
+  <div id="search-results-section" class="search-section hidden">
+    <p class="sources-title">Search Results</p>
+    <div id="search-results-list"></div>
+  </div>
+  <div id="sources-section" class="sources-section">
     <p class="sources-title">Supported sources</p>
     <div class="sources-grid">
       <div class="source-chip" style="border-color:#4a9eff44;color:#4a9eff"><span class="source-dot" style="background:#4a9eff"></span>Royal Road</div>
@@ -159,12 +223,14 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM
 </div>
 
 <!-- LOADING OVERLAY -->
+
 <div id="page-loading" class="page hidden" style="text-align:center;padding-top:100px">
   <div class="spinner-lg" style="margin-bottom:20px"></div>
-  <p style="color:var(--text2)">Fetching novel info...</p>
+  <p style="color:var(--text2)" id="loading-msg">Fetching novel info...</p>
 </div>
 
 <!-- NOVEL PAGE -->
+
 <div id="page-novel" class="page hidden">
   <button class="btn-back" onclick="showPage('search')">← Back</button>
   <div class="novel-header">
@@ -216,12 +282,14 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM
         <div class="toggle-knob"></div>
       </label>
     </div>
-    <button class="btn btn-primary" id="dl-btn" onclick="startDownload()">⬇️ Download EPUB</button>
+    <button class="btn btn-primary" id="dl-btn" onclick="startDownload()" style="margin-bottom:10px">⬇️ Download EPUB</button>
+    <button class="btn btn-secondary" onclick="addToQueue()">➕ Add to Queue</button>
   </div>
   <div id="chapter-list-wrap"></div>
 </div>
 
 <!-- DOWNLOAD PAGE -->
+
 <div id="page-download" class="page hidden">
   <button class="btn-back" onclick="showPage('novel')">← Back</button>
   <div class="dl-hero">
@@ -253,6 +321,42 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM
   </div>
 </div>
 
+<!-- LIBRARY PAGE -->
+
+<div id="page-library" class="page hidden">
+  <div class="page-title">📚 Library</div>
+  <p class="page-sub">Your downloaded novels</p>
+  <div id="update-banners"></div>
+  <div style="display:flex;gap:10px;margin-bottom:16px">
+    <button class="btn btn-secondary" style="flex:1" onclick="checkUpdates()">
+      <span id="check-updates-label">🔄 Check for updates</span>
+    </button>
+  </div>
+  <div id="library-list"></div>
+</div>
+
+<!-- QUEUE PAGE -->
+
+<div id="page-queue" class="page hidden">
+  <div class="page-title">⏳ Queue</div>
+  <p class="page-sub">Download multiple novels one after another</p>
+  <div id="queue-list"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-search" onclick="switchNav('search')">
+    <span class="nav-icon">🔍</span>Search
+  </button>
+  <button class="nav-btn" id="nav-library" onclick="switchNav('library')">
+    <span class="nav-icon">📚</span>Library
+  </button>
+  <button class="nav-btn" id="nav-queue" onclick="switchNav('queue')">
+    <span class="nav-icon">⏳</span>Queue
+  </button>
+</nav>
+
 </div>
 
 <script>
@@ -260,23 +364,81 @@ let novelData = null;
 let currentJobId = null;
 let pollTimer = null;
 let totalChapters = 0;
+let currentNav = 'search';
+let queuePollTimer = null;
 
 // ---- NAVIGATION ----
+function switchNav(name) {
+  currentNav = name;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'search') showPage('search');
+  if (name === 'library') { showPage('library'); loadLibrary(); }
+  if (name === 'queue') { showPage('queue'); loadQueue(); startQueuePoll(); }
+}
+
 function showPage(name) {
-  ['search','loading','novel','download'].forEach(p => {
+  ['search','loading','novel','download','library','queue'].forEach(p => {
     document.getElementById('page-'+p).classList.toggle('hidden', p !== name);
   });
   window.scrollTo(0,0);
 }
 
 // ---- SEARCH ----
-document.getElementById('url-input').addEventListener('keydown', e => { if(e.key==='Enter') fetchNovel(); });
+document.getElementById('url-input').addEventListener('keydown', e => { if(e.key==='Enter') handleSearch(); });
 
-async function fetchNovel() {
-  const url = document.getElementById('url-input').value.trim();
-  if (!url) return;
+function isUrl(str) {
+  return str.startsWith('http://') || str.startsWith('https://') || str.includes('.com') || str.includes('.net') || str.includes('.org');
+}
+
+async function handleSearch() {
+  const val = document.getElementById('url-input').value.trim();
+  if (!val) return;
+  if (isUrl(val)) {
+    await fetchNovel(val);
+  } else {
+    await searchByName(val);
+  }
+}
+
+async function searchByName(query) {
   document.getElementById('search-error').classList.add('hidden');
   document.getElementById('go-btn').disabled = true;
+  document.getElementById('sources-section').classList.add('hidden');
+  document.getElementById('search-results-section').classList.remove('hidden');
+  document.getElementById('search-results-list').innerHTML = '<div style="text-align:center;padding:20px"><div class="spinner-lg"></div><p style="color:var(--text2);margin-top:12px">Searching...</p></div>';
+  try {
+    const res = await fetch('/api/search?q=' + encodeURIComponent(query));
+    const data = await res.json();
+    renderSearchResults(data.results || []);
+  } catch(e) {
+    document.getElementById('search-results-list').innerHTML = '<p style="color:var(--error);font-size:13px">Search failed. Try pasting a URL instead.</p>';
+  } finally {
+    document.getElementById('go-btn').disabled = false;
+  }
+}
+
+function renderSearchResults(results) {
+  if (!results.length) {
+    document.getElementById('search-results-list').innerHTML = '<p style="color:var(--text2);font-size:13px;text-align:center;padding:20px">No results found. Try a different name or paste a URL.</p>';
+    return;
+  }
+  document.getElementById('search-results-list').innerHTML = results.map(r => `
+    <div class="search-result-item" onclick="fetchNovel('${escHtml(r.url)}')">
+      ${r.cover_url ? `<img class="search-result-cover" src="${escHtml(r.cover_url)}" onerror="this.style.display='none'"/>` : '<div class="search-result-cover-placeholder">📚</div>'}
+      <div class="search-result-info">
+        <div class="search-result-title">${escHtml(r.title)}</div>
+        <div class="search-result-meta">${escHtml(r.chapters)}</div>
+        <div class="search-result-source">${escHtml(r.source)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function fetchNovel(url) {
+  document.getElementById('search-error').classList.add('hidden');
+  document.getElementById('go-btn').disabled = true;
+  document.getElementById('loading-msg').textContent = 'Fetching novel info...';
   showPage('loading');
   try {
     const res = await fetch('/api/novel/info?url=' + encodeURIComponent(url));
@@ -303,7 +465,6 @@ function setupNovelPage() {
   document.getElementById('novel-source').textContent = novelData.source || '';
   document.getElementById('novel-ch-count').textContent = totalChapters + ' chapters available';
 
-  // Cover
   const wrap = document.getElementById('novel-cover-wrap');
   if (novelData.cover_url) {
     wrap.innerHTML = `<img class="novel-cover" src="${novelData.cover_url}" alt="cover" onerror="this.parentNode.innerHTML='<div class=novel-cover-placeholder>📚</div>'"/>`;
@@ -311,14 +472,12 @@ function setupNovelPage() {
     wrap.innerHTML = '<div class="novel-cover-placeholder">📚</div>';
   }
 
-  // Range
   ['ch-start','sl-start'].forEach(id => { document.getElementById(id).value = 1; document.getElementById(id).min = 1; document.getElementById(id).max = totalChapters; });
   ['ch-end','sl-end'].forEach(id => { document.getElementById(id).value = totalChapters; document.getElementById(id).min = 1; document.getElementById(id).max = totalChapters; });
   document.getElementById('preset-all').textContent = `All (${totalChapters})`;
   document.getElementById('clean-titles-toggle').checked = false;
   updateSummary();
 
-  // Chapter list
   const chapters = novelData.chapters || [];
   if (chapters.length > 0) {
     const items = chapters.map((ch,i) => `<div class="ch-item" id="chi-${i+1}"><span class="ch-num">${i+1}</span><span class="ch-name">${escHtml(ch.title)}</span></div>`).join('');
@@ -335,8 +494,7 @@ function onRangeChange() {
   let e = Math.max(s, Math.min(getEnd(), totalChapters));
   document.getElementById('sl-start').value = s;
   document.getElementById('sl-end').value = e;
-  updateSummary();
-  updateInRange();
+  updateSummary(); updateInRange();
 }
 function onSliderStart(v) {
   let s = parseInt(v), e = getEnd();
@@ -378,7 +536,10 @@ function updateInRange() {
   });
 }
 
-function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escHtml(t) {
+  if (!t) return '';
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
 // ---- DOWNLOAD ----
 async function startDownload() {
@@ -392,7 +553,7 @@ async function startDownload() {
   try {
     const res = await fetch('/api/crawl', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({url: novelData.url, start_chapter: s, end_chapter: e, format:'epub', clean_titles: cleanTitles})
+      body: JSON.stringify({url: novelData.url, start_chapter: s, end_chapter: e, clean_titles: cleanTitles})
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail||'Failed');
@@ -403,6 +564,22 @@ async function startDownload() {
   } catch(e) {
     const el = document.getElementById('novel-error');
     el.textContent = '⚠️ '+e.message; el.classList.remove('hidden');
+  }
+}
+
+async function addToQueue() {
+  const s = getStart(), e = getEnd();
+  const cleanTitles = document.getElementById('clean-titles-toggle').checked;
+  try {
+    const res = await fetch('/api/queue/add', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({url: novelData.url, start_chapter: s, end_chapter: e, clean_titles: cleanTitles})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail||'Failed');
+    alert(`✅ "${data.title}" added to queue!`);
+  } catch(e) {
+    alert('Failed to add to queue: ' + e.message);
   }
 }
 
@@ -433,14 +610,8 @@ async function pollJob() {
     document.getElementById('prog-count').textContent = job.total > 0 ? `${job.progress} / ${job.total} chapters` : 'Working...';
     document.getElementById('prog-pct').textContent = pct+'%';
     document.getElementById('prog-msg').textContent = job.message || '...';
-
-    if (job.status === 'done') {
-      clearInterval(pollTimer);
-      showDone(job);
-    } else if (job.status === 'error') {
-      clearInterval(pollTimer);
-      showError(job.message);
-    }
+    if (job.status === 'done') { clearInterval(pollTimer); showDone(job); }
+    else if (job.status === 'error') { clearInterval(pollTimer); showError(job.message); }
   } catch(e) {
     clearInterval(pollTimer);
     showError('Lost connection. Please try again.');
@@ -467,6 +638,147 @@ function showError(msg) {
 function doDownload() {
   window.location.href = '/api/download/'+currentJobId;
 }
+
+// ---- LIBRARY ----
+async function loadLibrary() {
+  try {
+    const res = await fetch('/api/library');
+    const data = await res.json();
+    renderLibrary(data.library || []);
+  } catch(e) {
+    document.getElementById('library-list').innerHTML = '<p style="color:var(--error);font-size:13px">Failed to load library.</p>';
+  }
+}
+
+function renderLibrary(library) {
+  const el = document.getElementById('library-list');
+  if (!library.length) {
+    el.innerHTML = `<div class="lib-empty"><div class="lib-empty-icon">📭</div><p>No novels yet.</p><p style="font-size:12px;margin-top:6px">Download a novel and it will appear here.</p></div>`;
+    return;
+  }
+  el.innerHTML = library.map(e => {
+    const newChapters = (e.total_chapters_now || e.total_chapters_at_download) - e.last_chapter;
+    return `
+    <div class="lib-item">
+      ${e.cover_url ? `<img class="lib-cover" src="${escHtml(e.cover_url)}" onerror="this.style.display='none'"/>` : '<div class="lib-cover-placeholder">📚</div>'}
+      <div class="lib-info">
+        <div class="lib-title">${escHtml(e.title)}</div>
+        <div class="lib-author">${escHtml(e.author)}</div>
+        <div class="lib-progress">Ch.1–${e.last_chapter} / ${e.total_chapters_now || e.total_chapters_at_download} chapters</div>
+        ${newChapters > 0 ? `<div class="lib-new">🆕 ${newChapters} new chapters available!</div>` : ''}
+        <div class="lib-date">Downloaded ${escHtml(e.last_downloaded)}</div>
+        <div class="lib-actions">
+          ${newChapters > 0 ? `<button class="btn-sm btn-accent-sm" onclick="continueDownload('${e.id}','${escHtml(e.url)}',${e.last_chapter+1},${e.total_chapters_now||e.total_chapters_at_download})">⬇️ Get new chapters</button>` : ''}
+          <button class="btn-sm btn-ghost-sm" onclick="redownload('${escHtml(e.url)}',1,${e.last_chapter})">↩️ Re-download</button>
+          <button class="btn-sm btn-danger-sm" onclick="deleteLibraryEntry('${e.id}',false)">🗑 Remove</button>
+          ${e.filepath ? `<button class="btn-sm btn-danger-sm" onclick="deleteLibraryEntry('${e.id}',true)">🗑 + Delete file</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function checkUpdates() {
+  const label = document.getElementById('check-updates-label');
+  label.innerHTML = '<span class="spinner-sm"></span> Checking...';
+  try {
+    const res = await fetch('/api/library/check-updates');
+    const data = await res.json();
+    loadLibrary();
+    if (data.updates.length === 0) {
+      document.getElementById('update-banners').innerHTML = '<div class="update-banner"><span>✅</span><span class="update-banner-text">All caught up! No new chapters.</span></div>';
+    } else {
+      document.getElementById('update-banners').innerHTML = data.updates.map(u => `
+        <div class="update-banner">
+          <span>📢</span>
+          <span class="update-banner-text"><strong>${escHtml(u.title)}</strong> — ${u.new_chapters} new chapter${u.new_chapters>1?'s':''} available!</span>
+        </div>
+      `).join('');
+    }
+  } catch(e) {
+    document.getElementById('update-banners').innerHTML = '<div class="update-banner"><span>❌</span><span class="update-banner-text">Failed to check updates.</span></div>';
+  } finally {
+    label.textContent = '🔄 Check for updates';
+  }
+}
+
+async function deleteLibraryEntry(id, deleteFile) {
+  if (!confirm(deleteFile ? 'Remove from library and delete the EPUB file?' : 'Remove from library?')) return;
+  try {
+    await fetch('/api/library/delete', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({id, delete_file: deleteFile})
+    });
+    loadLibrary();
+  } catch(e) {
+    alert('Failed to delete.');
+  }
+}
+
+function continueDownload(id, url, startChapter, endChapter) {
+  document.getElementById('url-input').value = url;
+  fetchNovel(url).then(() => {
+    setPreset(startChapter, endChapter);
+    switchNav('search');
+  });
+}
+
+function redownload(url, start, end) {
+  document.getElementById('url-input').value = url;
+  fetchNovel(url).then(() => {
+    setPreset(start, end);
+    switchNav('search');
+  });
+}
+
+// ---- QUEUE ----
+async function loadQueue() {
+  try {
+    const res = await fetch('/api/queue');
+    const data = await res.json();
+    renderQueue(data.queue || []);
+  } catch(e) {}
+}
+
+function renderQueue(queue) {
+  const el = document.getElementById('queue-list');
+  if (!queue.length) {
+    el.innerHTML = `<div class="queue-empty"><div class="queue-empty-icon">⏳</div><p>Queue is empty.</p><p style="font-size:12px;margin-top:6px">Add novels from the novel page using "Add to Queue".</p></div>`;
+    return;
+  }
+  el.innerHTML = queue.map(item => {
+    const pct = item.total_chapters > 0 ? Math.round((item.progress||0) / (item.end_chapter - item.start_chapter + 1) * 100) : 0;
+    return `
+    <div class="queue-item">
+      ${item.cover_url ? `<img class="queue-cover" src="${escHtml(item.cover_url)}" onerror="this.style.display='none'"/>` : '<div class="queue-cover-placeholder">📚</div>'}
+      <div class="queue-info">
+        <div class="queue-title">${escHtml(item.title)}</div>
+        <div class="queue-chapters">Ch.${item.start_chapter}–${item.end_chapter}</div>
+        ${item.status === 'downloading' ? `<div class="queue-prog-bg"><div class="queue-prog-fill" style="width:${pct}%"></div></div>` : ''}
+        <div class="queue-status ${item.status}">${
+          item.status === 'queued' ? '⏳ Waiting' :
+          item.status === 'downloading' ? `⚙️ Downloading... ${pct}%` :
+          item.status === 'done' ? '✅ Done' : '❌ Error'
+        }</div>
+        ${item.status === 'done' && item.job_id ? `<button class="btn-sm btn-accent-sm" style="margin-top:8px" onclick="currentJobId='${item.job_id}';doDownload()">⬇️ Download EPUB</button>` : ''}
+        ${item.status === 'queued' ? `<button class="btn-sm btn-danger-sm" style="margin-top:8px" onclick="removeFromQueue('${item.id}')">Remove</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function removeFromQueue(id) {
+  await fetch('/api/queue/' + id, {method:'DELETE'});
+  loadQueue();
+}
+
+function startQueuePoll() {
+  clearInterval(queuePollTimer);
+  queuePollTimer = setInterval(() => {
+    if (currentNav === 'queue') loadQueue();
+  }, 2000);
+}
 </script>
+
 </body>
 </html>
