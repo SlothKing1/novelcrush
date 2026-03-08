@@ -11,6 +11,17 @@ def clean_chapter_title(title):
     cleaned = re.sub(r'^\d+\s*[-–]\s*(Chapter\s+\d+)', r'\1', cleaned, flags=re.IGNORECASE)
     return cleaned.strip()
 
+def remove_duplicate_first_para(title, content):
+    """Remove first paragraph if it duplicates the chapter title."""
+    paras = [p.strip() for p in content.split("\n\n") if p.strip()]
+    if not paras:
+        return content
+    first = paras[0].strip()
+    # Check if first paragraph matches the title (or cleaned version of it)
+    if first.lower() == title.lower() or first.lower() == clean_chapter_title(title).lower():
+        paras = paras[1:]
+    return "\n\n".join(paras)
+
 def build_epub(title, chapters, output_path, cover_url=None, author="Unknown", clean_titles=False):
     book = epub.EpubBook()
     book.set_title(title)
@@ -55,11 +66,12 @@ p {
     epub_chapters = []
     for i, ch in enumerate(chapters):
         ch_title = clean_chapter_title(ch["title"]) if clean_titles else ch["title"]
+        content = remove_duplicate_first_para(ch_title, ch["content"])
+
         c = epub.EpubHtml(title=ch_title, file_name=f"chapter_{i+1}.xhtml", lang="en")
 
-        # Build paragraphs
         paragraphs = ""
-        for para in ch["content"].split("\n\n"):
+        for para in content.split("\n\n"):
             para = para.strip()
             if para:
                 paragraphs += f"<p>{para}</p>\n"
