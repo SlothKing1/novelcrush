@@ -297,9 +297,9 @@ function setupNovelPage() {
   // Chapter list
   const chapters = novelData.chapters || [];
   if (chapters.length > 0) {
-    const shown = chapters.slice(0, 100);
+    const shown = chapters;
     const items = shown.map((ch,i) => `<div class="ch-item" id="chi-${i+1}"><span class="ch-num">${i+1}</span><span class="ch-name">${escHtml(ch.title)}</span></div>`).join('');
-    const more = chapters.length > 100 ? `<div class="ch-more">+ ${chapters.length-100} more chapters</div>` : '';
+    const more = '';
     document.getElementById('chapter-list-wrap').innerHTML = `<div class="chapter-list"><div class="chapter-list-title">Chapter List</div><div class="chapter-scroll">${items}${more}</div></div>`;
   }
   updateInRange();
