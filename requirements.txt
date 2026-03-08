@@ -1,6 +1,7 @@
 fastapi
 uvicorn
-aiohttp
+aiohttp[speedups]
+brotli
 beautifulsoup4
 ebooklib
 lxml
