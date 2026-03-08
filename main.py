@@ -75,7 +75,7 @@ async def run_crawl(job_id, req):
         jobs[job_id]["message"] = "Building EPUB..."
         safe_title = "".join(c for c in title if c.isalnum() or c in " .-_").strip()
         filename = f"{safe_title} Ch.{req.start_chapter or 1}-{req.end_chapter or len(chapters)}.epub"
-        filepath = f"/tmp/{job_id}_{filename}"
+        filepath = f"/data/data/com.termux/files/home/novelcrush/{job_id}_{filename}"
         build_epub(title, chapter_contents, filepath, info.get("cover_url"), info.get("author", "Unknown"))
         jobs[job_id]["status"] = "done"
         jobs[job_id]["filepath"] = filepath
