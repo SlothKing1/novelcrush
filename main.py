@@ -15,6 +15,7 @@ class CrawlRequest(BaseModel):
     url: str
     start_chapter: int = 1
     end_chapter: int = None
+    clean_titles: bool = False
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -33,7 +34,7 @@ async def novel_info(url: str):
 @app.post("/api/crawl")
 async def start_crawl(req: CrawlRequest, bg: BackgroundTasks):
     job_id = str(uuid.uuid4())
-    jobs[job_id] = {"status": "pending", "progress": 0, "total": 0, "message": "Starting...", "filepath": None, "novel_title": ""}
+    jobs[job_id] = {"status": "pending", "progress": 0, "total": 0, "message": "Starting...", "filepath": None, "filename": "", "novel_title": ""}
     bg.add_task(run_crawl, job_id, req)
     return {"job_id": job_id}
 
@@ -50,7 +51,7 @@ def download(job_id: str):
     j = jobs[job_id]
     if j["status"] != "done" or not j["filepath"] or not os.path.exists(j["filepath"]):
         raise HTTPException(400, "File not ready")
-    return FileResponse(j["filepath"], media_type="application/epub+zip", filename=os.path.basename(j["filepath"]))
+    return FileResponse(j["filepath"], media_type="application/epub+zip", filename=j["filename"])
 
 async def run_crawl(job_id, req):
     try:
@@ -76,9 +77,10 @@ async def run_crawl(job_id, req):
         safe_title = "".join(c for c in title if c.isalnum() or c in " .-_").strip()
         filename = f"{safe_title} Ch.{req.start_chapter or 1}-{req.end_chapter or len(chapters)}.epub"
         filepath = f"/data/data/com.termux/files/home/novelcrush/{job_id}_{filename}"
-        build_epub(title, chapter_contents, filepath, info.get("cover_url"), info.get("author", "Unknown"))
+        build_epub(title, chapter_contents, filepath, info.get("cover_url"), info.get("author", "Unknown"), req.clean_titles)
         jobs[job_id]["status"] = "done"
         jobs[job_id]["filepath"] = filepath
+        jobs[job_id]["filename"] = filename
         jobs[job_id]["message"] = "Done!"
     except Exception as e:
         jobs[job_id]["status"] = "error"
