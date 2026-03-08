@@ -91,6 +91,18 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM
 .ch-name{color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ch-more{padding:12px 16px;color:var(--text3);font-size:13px;text-align:center}
 
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--border);margin-bottom:14px}
+.toggle-label{flex:1;margin-right:12px}
+.toggle-label-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.toggle-label-sub{font-size:12px;color:var(--text2)}
+.toggle-wrap{position:relative;width:44px;height:26px;flex-shrink:0}
+.toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bg3);border:1px solid var(--border);border-radius:26px;cursor:pointer;transition:.2s}
+.toggle-knob{position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:var(--text3);border-radius:50%;transition:.2s;pointer-events:none}
+.toggle-wrap input:checked + .toggle-track{background:var(--accent);border-color:var(--accent)}
+.toggle-wrap input:checked ~ .toggle-knob{left:21px;background:#1a1500}
+
 /* DOWNLOAD PAGE */
 .dl-hero{text-align:center;padding:40px 0 28px}
 .dl-icon{font-size:56px;margin-bottom:16px}
@@ -193,6 +205,17 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM
       <span class="pill pill-accent" id="sum-filename"></span>
     </div>
     <div id="novel-error" class="error-msg hidden" style="margin-bottom:12px"></div>
+    <div class="toggle-row">
+      <div class="toggle-label">
+        <div class="toggle-label-title">Clean chapter titles</div>
+        <div class="toggle-label-sub">Remove duplicates e.g. "Ch.1 - Chapter 1: Title" → "Chapter 1: Title"</div>
+      </div>
+      <label class="toggle-wrap">
+        <input type="checkbox" id="clean-titles-toggle"/>
+        <div class="toggle-track"></div>
+        <div class="toggle-knob"></div>
+      </label>
+    </div>
     <button class="btn btn-primary" id="dl-btn" onclick="startDownload()">⬇️ Download EPUB</button>
   </div>
   <div id="chapter-list-wrap"></div>
@@ -292,15 +315,14 @@ function setupNovelPage() {
   ['ch-start','sl-start'].forEach(id => { document.getElementById(id).value = 1; document.getElementById(id).min = 1; document.getElementById(id).max = totalChapters; });
   ['ch-end','sl-end'].forEach(id => { document.getElementById(id).value = totalChapters; document.getElementById(id).min = 1; document.getElementById(id).max = totalChapters; });
   document.getElementById('preset-all').textContent = `All (${totalChapters})`;
+  document.getElementById('clean-titles-toggle').checked = false;
   updateSummary();
 
   // Chapter list
   const chapters = novelData.chapters || [];
   if (chapters.length > 0) {
-    const shown = chapters;
-    const items = shown.map((ch,i) => `<div class="ch-item" id="chi-${i+1}"><span class="ch-num">${i+1}</span><span class="ch-name">${escHtml(ch.title)}</span></div>`).join('');
-    const more = '';
-    document.getElementById('chapter-list-wrap').innerHTML = `<div class="chapter-list"><div class="chapter-list-title">Chapter List</div><div class="chapter-scroll">${items}${more}</div></div>`;
+    const items = chapters.map((ch,i) => `<div class="ch-item" id="chi-${i+1}"><span class="ch-num">${i+1}</span><span class="ch-name">${escHtml(ch.title)}</span></div>`).join('');
+    document.getElementById('chapter-list-wrap').innerHTML = `<div class="chapter-list"><div class="chapter-list-title">Chapter List</div><div class="chapter-scroll">${items}</div></div>`;
   }
   updateInRange();
 }
@@ -361,6 +383,7 @@ function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replac
 // ---- DOWNLOAD ----
 async function startDownload() {
   const s = getStart(), e = getEnd();
+  const cleanTitles = document.getElementById('clean-titles-toggle').checked;
   document.getElementById('novel-error').classList.add('hidden');
   if (s < 1 || e < s) {
     const el = document.getElementById('novel-error');
@@ -369,7 +392,7 @@ async function startDownload() {
   try {
     const res = await fetch('/api/crawl', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({url: novelData.url, start_chapter: s, end_chapter: e, format:'epub'})
+      body: JSON.stringify({url: novelData.url, start_chapter: s, end_chapter: e, format:'epub', clean_titles: cleanTitles})
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail||'Failed');
@@ -430,8 +453,7 @@ function showDone(job) {
   document.getElementById('progress-card').classList.add('hidden');
   document.getElementById('done-card').classList.remove('hidden');
   document.getElementById('done-chapters').textContent = job.total;
-  const title = (novelData?.title||'Novel').slice(0,25);
-  document.getElementById('done-filename').textContent = title+'... Ch.epub';
+  document.getElementById('done-filename').textContent = job.filename || 'novel.epub';
 }
 
 function showError(msg) {
