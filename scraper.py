@@ -32,7 +32,7 @@ def get_domain(url):
 
 class NovelScraper:
     def __init__(self, url):
-        self.url = url
+        self.url = re.sub(r'\?page=\d+', '', url).rstrip("/")
         self.domain = get_domain(url)
         self.cfg = next((v for k, v in SOURCES.items() if k in self.domain), None)
         self._session = None
@@ -124,7 +124,7 @@ class NovelScraper:
 
         print(f"[scraper] Total pages: {last_page}")
 
-        base = self.url.rstrip("/")
+        base = re.sub(r'\?page=\d+', '', self.url).rstrip("/")
         for page in range(2, last_page + 1):
             try:
                 s2 = await self.fetch(f"{base}?page={page}")
